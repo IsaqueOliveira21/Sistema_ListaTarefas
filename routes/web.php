@@ -14,7 +14,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::resource('tarefa', 'App\Http\Controllers\TarefaController'); //->middleware('auth');
 
 Route::get('/mensagem-test', function () {
-    //return new MensagemTesteMail();
-    Mail::to('isaque16.oliveira@gmail.com')->send(new MensagemTesteMail()); // Pode ser utilizado no tinker tambem
-    return 'E-mail enviado com sucesso!';
+    return new MensagemTesteMail();
+    //Mail::to('isaque16.oliveira@gmail.com')->send(new MensagemTesteMail()); // Pode ser utilizado no tinker tambem
+    //return 'E-mail enviado com sucesso!';
 });
