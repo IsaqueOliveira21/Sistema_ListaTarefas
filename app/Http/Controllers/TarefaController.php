@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NovaTarefaMail;
 use App\Models\Tarefa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class TarefaController extends Controller
 {
@@ -42,7 +44,7 @@ class TarefaController extends Controller
      */
     public function create()
     {
-        //
+        return view('tarefas.create');
     }
 
     /**
@@ -53,7 +55,10 @@ class TarefaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $destinatario = Auth::user()->email;
+        $tarefa = Tarefa::create($request->all());
+        Mail::to($destinatario)->send(new NovaTarefaMail($tarefa));
+        return redirect()->route('tarefa.show', compact('tarefa'));
     }
 
     /**
@@ -64,7 +69,7 @@ class TarefaController extends Controller
      */
     public function show(Tarefa $tarefa)
     {
-        //
+        return view('tarefas.show', compact('tarefa'));
     }
 
     /**
