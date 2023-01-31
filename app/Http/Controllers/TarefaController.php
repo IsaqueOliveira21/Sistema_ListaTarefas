@@ -25,6 +25,7 @@ class TarefaController extends Controller
 
     public function index()
     {
+        /*
         if (Auth::check()) { // outro metodo de verificar a autenticação do usuário. (outra forma para usar o auth é: auth()->chech())
             $id = Auth::user()->id;
             $name = Auth::user()->name;
@@ -34,6 +35,10 @@ class TarefaController extends Controller
         } else {
             return 'Você não está logado!';
         }
+        */
+        $user_id = Auth::user()->id;
+        $tarefas = Tarefa::where('user_id', $user_id)->paginate(10);
+        return view('tarefas.index', compact('tarefas'));
 
     }
 
@@ -55,8 +60,11 @@ class TarefaController extends Controller
      */
     public function store(Request $request)
     {
+        $dados = $request->all('tarefa','data_limite_conclusao');
+        $dados['user_id'] = Auth::user()->id;
+        //dd($dados);
         $destinatario = Auth::user()->email;
-        $tarefa = Tarefa::create($request->all());
+        $tarefa = Tarefa::create($dados);
         Mail::to($destinatario)->send(new NovaTarefaMail($tarefa));
         return redirect()->route('tarefa.show', compact('tarefa'));
     }
@@ -80,7 +88,13 @@ class TarefaController extends Controller
      */
     public function edit(Tarefa $tarefa)
     {
-        //
+        $user_id = Auth::user()->id;
+        if($tarefa->user_id == $user_id){
+            return view('tarefas.edit', compact('tarefa'));
+        } else {
+            return view('acesso-negado');
+        }
+
     }
 
     /**
@@ -92,7 +106,13 @@ class TarefaController extends Controller
      */
     public function update(Request $request, Tarefa $tarefa)
     {
-        //
+        $user_id = Auth::user()->id;
+        if($tarefa->user_id == $user_id){
+            $tarefa->update($request->all());
+            return redirect()->route('tarefa.index');
+        } else {
+            return view('acesso-negado');
+        }
     }
 
     /**
