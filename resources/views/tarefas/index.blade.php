@@ -5,14 +5,15 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Tarefas</div>
+                <div class="card-header">Tarefas <a href="{{route('tarefa.create')}}">Novo</a> </div>
                     <div class="card-body">
                         <table class="table">
                             <thead>
                               <tr>
                                 <th scope="col" class="text-center">Nº</th>
-                                <th scope="col" class="text-left">Tarefa</th>
+                                <th scope="col" class="text-center">Tarefa</th>
                                 <th scope="col" class="text-center">Data limite conclusão</th>
+                                <th class="text-center">#</th>
                                 <th class="text-center">#</th>
                               </tr>
                             </thead>
@@ -26,10 +27,17 @@
                                         <td class="text-center">
                                             <a href="{{ route('tarefa.edit', $tarefa->id) }}" class="btn btn-primary" role="button">Editar</a>
                                         </td>
+                                        <td class="text-center">
+                                            <form id="form_{{$tarefa->id}}" method="POST" action="{{ route('tarefa.destroy', $tarefa->id) }}">
+                                                @method('DELETE')
+                                                @csrf
+                                            </form>
+                                            <a class="btn btn-danger" role="button" href="#" onclick="document.getElementById('form_{{$tarefa->id}}').submit()">Excluir</a>
+                                        </td>
                                     </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="3" class="text-center">Não há registro de tarefas</td>
+                                            <td colspan="5" class="text-center">Não há registro de tarefas</td>
                                         </tr>
                                 @endforelse
                             </tbody>
