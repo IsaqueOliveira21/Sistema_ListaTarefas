@@ -3,7 +3,7 @@
 use App\Mail\MensagemTesteMail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-
+Route::get('users/export/', [UsersController::class, 'export']);
 Route::get('/', function () {
     return view('bem-vindo');
 });
@@ -15,6 +15,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])
     ->name('home')
     ->middleware('verified');
 
+Route::get('tarefa/exportacao', 'App\Http\Controllers\TarefaController@exportacao')->name('tarefa.exportacao');
 Route::resource('tarefa', 'App\Http\Controllers\TarefaController')->middleware('verified'); //->middleware('auth');
 
 Route::get('/mensagem-test', function () {

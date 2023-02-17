@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TarefasExport;
 use App\Mail\NovaTarefaMail;
 use App\Models\Tarefa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Excel;
 
 class TarefaController extends Controller
 {
@@ -131,4 +133,10 @@ class TarefaController extends Controller
             return view('acesso-negado');
         }
     }
+
+    public function exportacao() {
+        return \Maatwebsite\Excel\Facades\Excel::download(new TarefasExport, 'tarefas.xlsx');
+    }
 }
+
+
