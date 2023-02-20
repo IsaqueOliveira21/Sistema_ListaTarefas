@@ -57,12 +57,12 @@ class TarefaController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $dados = $request->all('tarefa','data_limite_conclusao');
+        $dados = $request->all('tarefa', 'data_limite_conclusao');
         $dados['user_id'] = Auth::user()->id;
         //dd($dados);
         $destinatario = Auth::user()->email;
@@ -74,7 +74,7 @@ class TarefaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Tarefa  $tarefa
+     * @param \App\Models\Tarefa $tarefa
      * @return \Illuminate\Http\Response
      */
     public function show(Tarefa $tarefa)
@@ -85,13 +85,13 @@ class TarefaController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Tarefa  $tarefa
+     * @param \App\Models\Tarefa $tarefa
      * @return \Illuminate\Http\Response
      */
     public function edit(Tarefa $tarefa)
     {
         $user_id = Auth::user()->id;
-        if($tarefa->user_id == $user_id){
+        if ($tarefa->user_id == $user_id) {
             return view('tarefas.edit', compact('tarefa'));
         } else {
             return view('acesso-negado');
@@ -102,14 +102,14 @@ class TarefaController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Tarefa  $tarefa
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Tarefa $tarefa
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Tarefa $tarefa)
     {
         $user_id = Auth::user()->id;
-        if($tarefa->user_id == $user_id){
+        if ($tarefa->user_id == $user_id) {
             $tarefa->update($request->all());
             return redirect()->route('tarefa.index');
         } else {
@@ -120,13 +120,13 @@ class TarefaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Tarefa  $tarefa
+     * @param \App\Models\Tarefa $tarefa
      * @return \Illuminate\Http\Response
      */
     public function destroy(Tarefa $tarefa)
     {
         $user_id = Auth::user()->id;
-        if($tarefa->user_id == $user_id){
+        if ($tarefa->user_id == $user_id) {
             $tarefa->delete();
             return redirect()->route('tarefa.index');
         } else {
@@ -134,8 +134,19 @@ class TarefaController extends Controller
         }
     }
 
-    public function exportacao() {
-        return \Maatwebsite\Excel\Facades\Excel::download(new TarefasExport, 'tarefas.xlsx');
+
+    public function exportacao($extensao)
+    {
+        if ($extensao == 'xlsx') {
+            return \Maatwebsite\Excel\Facades\Excel::download(new TarefasExport, 'tarefas.xlsx');
+        } elseif ($extensao == 'csv') {
+            return \Maatwebsite\Excel\Facades\Excel::download(new TarefasExport, 'tarefas.csv');
+        } elseif ($extensao == 'pdf') {
+            return \Maatwebsite\Excel\Facades\Excel::download(new TarefasExport, 'tarefas.pdf');
+        } else {
+            return redirect()->route('tarefa.index');
+        }
+
     }
 }
 
